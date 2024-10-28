@@ -3,6 +3,7 @@ Cyberpsychosis crea sobrecargas en el Hardware de tu Objetivo!
 ![](https://github.com/viajatech/Cyberpsychosis/blob/main/sasha-yakovleva-cyberpunk-edgerunners-thumb.jpg)
 ---------
 *Uso Responsable: Este programa puede poner una carga significativa en tu sistema. Úsalo con precaución y asegúrate de guardar todo tu trabajo antes de ejecutarlo.
+---
 ![](https://github.com/viajatech/Cyberpsychosis-/blob/main/CYBERPSYCHOSIS%20GUI.png)
 ---
 *Riesgos Potenciales: La sobrecarga prolongada puede causar sobrecalentamiento o reducir la vida útil del hardware.
