@@ -10,13 +10,13 @@
 
 
 #Recuerda primero instalar las librerias!!! 
-pip install psutil
-pip install matplotlib
-pip install pillow
-pip install GPUtil
+#pip install psutil
+#pip install matplotlib
+#pip install pillow
+#pip install GPUtil
 
 #Opcional para Nvidia
-pip install pycuda
+#pip install pycuda
 
 
 
