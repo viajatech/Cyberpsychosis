@@ -1,0 +1,189 @@
+#Por David Ruiz
+#Puedes usar mi script siempre y cuando me des créditos en mis redes sociales @viajatech
+#Se agredecido y dale estrella a este repositorio, gracias! 
+
+#Cyberpsychosis crea sobrecargas en el Hardware de tu objetivo!
+
+#Uso Responsable: Este programa puede poner una carga significativa en tu sistema. Úsalo con precaución y asegúrate de guardar todo tu trabajo antes de ejecutarlo.
+#Riesgos Potenciales: La sobrecarga prolongada puede causar sobrecalentamiento o reducir la vida útil del hardware.
+#Responsabilidad: Usa esta herramienta bajo tu propio riesgo. No me hago responsable de posibles daños o pérdidas de datos.
+
+
+#Recuerda primero instalar las librerias!!! 
+pip install psutil
+pip install matplotlib
+pip install pillow
+pip install GPUtil
+
+#Opcional para Nvidia
+pip install pycuda
+
+
+
+import tkinter as tk
+from tkinter import ttk
+import threading
+import psutil
+import time
+import os
+import GPUtil
+
+# Variables globales para controlar la carga
+cpu_load = False
+ram_load = False
+disk_load = False
+gpu_load = False  # Añadido gpu_load
+
+# Funciones para generar carga
+def generate_cpu_load():
+    while cpu_load:
+        pass  # Operación que consume CPU
+
+def generate_ram_load():
+    data = []
+    try:
+        while ram_load:
+            data.append(' ' * 10**7)  # Agregar 10MB de datos en cada iteración
+            time.sleep(0.1)
+    except MemoryError:
+        data.clear()  # Limpiar datos en caso de error de memoria
+        time.sleep(1)
+
+def generate_disk_load():
+    while disk_load:
+        with open('temp_file.dat', 'wb') as f:
+            f.write(os.urandom(10**7))  # Escribir 10MB de datos
+        time.sleep(0.1)
+        os.remove('temp_file.dat')
+
+def generate_gpu_load():
+    try:
+        import pycuda.driver as cuda
+        import pycuda.autoinit
+        import pycuda.gpuarray as gpuarray
+        import numpy as np
+        while gpu_load:
+            a = np.random.randn(1000000).astype(np.float32)
+            a_gpu = gpuarray.to_gpu(a)
+            a_gpu.get()
+    except ImportError:
+        gpu_label.config(text="PyCUDA no está instalado o GPU no compatible.")
+    except Exception as e:
+        gpu_label.config(text=f"Error: {e}")
+
+# Funciones de inicio y detención
+def start_cpu_load():
+    global cpu_load
+    if not cpu_load:
+        cpu_load = True
+        threading.Thread(target=generate_cpu_load).start()
+
+def stop_cpu_load():
+    global cpu_load
+    cpu_load = False
+
+def start_ram_load():
+    global ram_load
+    if not ram_load:
+        ram_load = True
+        threading.Thread(target=generate_ram_load).start()
+
+def stop_ram_load():
+    global ram_load
+    ram_load = False
+
+def start_disk_load():
+    global disk_load
+    if not disk_load:
+        disk_load = True
+        threading.Thread(target=generate_disk_load).start()
+
+def stop_disk_load():
+    global disk_load
+    disk_load = False
+
+def start_gpu_load():
+    global gpu_load
+    if not gpu_load:
+        gpu_load = True
+        threading.Thread(target=generate_gpu_load).start()
+
+def stop_gpu_load():
+    global gpu_load
+    gpu_load = False
+
+# Actualización de uso del sistema
+def update_system_usage():
+    cpu_usage = psutil.cpu_percent(interval=1)
+    cpu_label.config(text=f"Uso de CPU: {cpu_usage}%")
+
+    ram_usage = psutil.virtual_memory().percent
+    ram_label.config(text=f"Uso de RAM: {ram_usage}%")
+
+    disk_usage = psutil.disk_usage('/').percent
+    disk_label.config(text=f"Uso de Disco: {disk_usage}%")
+
+    gpus = GPUtil.getGPUs()
+    if gpus:
+        gpu_usage = gpus[0].load * 100
+        gpu_label.config(text=f"Uso de GPU: {gpu_usage:.2f}%")
+    else:
+        gpu_label.config(text="GPU no detectada")
+
+    root.after(1000, update_system_usage)
+
+# Interfaz gráfica
+root = tk.Tk()
+root.title("Cyberpsychosis by Viaja Tech")
+root.geometry("400x550")
+root.resizable(False, False)
+
+# Estilo Cyberpunk
+root.configure(bg='#0f0f0f')
+style = ttk.Style()
+style.theme_use('clam')
+style.configure("TButton", foreground='cyan', background='#0f0f0f', font=('Helvetica', 10, 'bold'))
+style.configure("TLabel", foreground='cyan', background='#0f0f0f', font=('Helvetica', 12))
+
+# Etiquetas de uso
+cpu_label = ttk.Label(root, text="Uso de CPU: 0%")
+cpu_label.pack(pady=5)
+
+gpu_label = ttk.Label(root, text="Uso de GPU: 0%")
+gpu_label.pack(pady=5)
+
+ram_label = ttk.Label(root, text="Uso de RAM: 0%")
+ram_label.pack(pady=5)
+
+disk_label = ttk.Label(root, text="Uso de Disco: 0%")
+disk_label.pack(pady=5)
+
+# Botones de control CPU
+cpu_frame = ttk.Frame(root)
+cpu_frame.pack(pady=10)
+ttk.Button(cpu_frame, text="Iniciar Carga CPU", command=start_cpu_load).pack(side='left', padx=5)
+ttk.Button(cpu_frame, text="Detener Carga CPU", command=stop_cpu_load).pack(side='left', padx=5)
+
+# Botones de control GPU
+gpu_frame = ttk.Frame(root)
+gpu_frame.pack(pady=10)
+ttk.Button(gpu_frame, text="Iniciar Carga GPU", command=start_gpu_load).pack(side='left', padx=5)
+ttk.Button(gpu_frame, text="Detener Carga GPU", command=stop_gpu_load).pack(side='left', padx=5)
+
+# Botones de control RAM
+ram_frame = ttk.Frame(root)
+ram_frame.pack(pady=10)
+ttk.Button(ram_frame, text="Iniciar Carga RAM", command=start_ram_load).pack(side='left', padx=5)
+ttk.Button(ram_frame, text="Detener Carga RAM", command=stop_ram_load).pack(side='left', padx=5)
+
+# Botones de control Disco
+disk_frame = ttk.Frame(root)
+disk_frame.pack(pady=10)
+ttk.Button(disk_frame, text="Iniciar Carga Disco", command=start_disk_load).pack(side='left', padx=5)
+ttk.Button(disk_frame, text="Detener Carga Disco", command=stop_disk_load).pack(side='left', padx=5)
+
+# Iniciar actualización de uso del sistema
+update_system_usage()
+
+# Ejecutar la interfaz
+root.mainloop()
