@@ -1,5 +1,6 @@
 Cyberpsychosis crea sobrecargas en el Hardware de tu Objetivo!
 ---------
+![](https://github.com/viajatech/Cyberpsychosis/blob/main/sasha-yakovleva-cyberpunk-edgerunners-thumb.jpg)
 ![](https://github.com/viajatech/Cyberpsychosis-/blob/main/CYBERPSYCHOSIS%20GUI.png)
 ---------
 *Uso Responsable: Este programa puede poner una carga significativa en tu sistema. Úsalo con precaución y asegúrate de guardar todo tu trabajo antes de ejecutarlo.
